@@ -1,0 +1,13 @@
+{
+  "appId": "com.skymoon.humantool",
+  "appName": "人类工具进化史",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

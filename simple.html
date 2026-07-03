@@ -1,0 +1,1162 @@
+﻿﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<title>人类工具进化史 - 合成游戏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;overflow:hidden;overscroll-behavior:none}
+body{height:100%;overflow:hidden}
+:root{--bg:#080818;--bg2:#0e0e28;--card:#161640;--card2:#1e1e50;--accent:#f0a030;--accent2:#e94560;--gold:#ffd700;--text:#e0e0f0;--text2:#7878a0;--success:#4ecca3;--border:#282858;--stone:#cd853f;--bronze:#daa520;--iron:#8898b0;--industrial:#e07020;--info:#9060e0}
+@keyframes discoverPop{0%{transform:scale(0) rotate(-180deg);opacity:0}60%{transform:scale(1.25) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0) translate(0,0)}50%{opacity:1;transform:scale(1) translate(var(--tx),var(--ty))}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,160,48,0.3)}50%{box-shadow:0 0 0 8px rgba(240,160,48,0)}}
+@keyframes drawLine{from{stroke-dashoffset:2000}to{stroke-dashoffset:0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+body{font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);height:100%;overflow:hidden;user-select:none;-webkit-user-select:none}
+.header{background:linear-gradient(135deg,var(--bg2),var(--card));padding:10px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--border);flex-wrap:wrap}
+.header h1{font-size:1.2em;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:1px;white-space:nowrap}
+.progress-wrap{display:flex;align-items:center;gap:8px;flex:1;max-width:300px;min-width:120px}
+.progress-bar{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent),var(--gold));border-radius:4px;transition:width .5s}
+.progress-text{font-size:.75em;color:var(--text2);white-space:nowrap}
+.era-badge{padding:3px 12px;border-radius:14px;font-size:.75em;font-weight:bold;border:2px solid;white-space:nowrap;transition:all .5s}
+.hbtn{padding:5px 12px;border-radius:8px;font-size:.75em;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;transition:all .3s;white-space:nowrap}
+.hbtn:hover{border-color:var(--accent);color:var(--accent)}
+.main{display:flex;height:calc(100vh - 50px);height:calc(100dvh - 50px);overflow:hidden}
+.workspace{flex:1;display:flex;flex-direction:column;align-items:center;padding:12px 16px;position:relative;background:radial-gradient(ellipse at center,#0c0c24 0%,var(--bg) 70%);overflow-y:auto;gap:8px}
+.ws-hint{color:var(--text2);font-size:.82em;text-align:center}
+.craft-area{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;min-height:90px}
+.craft-slot{width:80px;height:88px;border:2px dashed var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;background:rgba(255,255,255,.015);position:relative}
+.craft-slot:hover{border-color:var(--accent);background:rgba(240,160,48,.04)}
+.craft-slot.drag-over{border-color:var(--gold);background:rgba(255,215,0,.08);transform:scale(1.04)}
+.craft-slot.filled{border-style:solid;border-color:var(--accent);background:rgba(240,160,48,.06);animation:float 2.5s ease-in-out infinite}
+.craft-slot .se{font-size:2em;line-height:1}
+.craft-slot .sn{font-size:.6em;color:var(--text2);margin-top:1px;text-align:center;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.craft-slot .sx{position:absolute;top:1px;right:3px;font-size:.65em;color:var(--accent2);cursor:pointer;opacity:0;transition:opacity .2s}
+.craft-slot:hover .sx{opacity:1}
+.craft-plus{font-size:1.4em;color:var(--text2);font-weight:bold}
+.tool-slot-wrap{display:flex;align-items:center;gap:8px;margin-top:4px}
+.tool-slot{width:64px;height:70px;border:2px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;background:rgba(100,200,255,.02);position:relative}
+.tool-slot:hover{border-color:#60a0d0}
+.tool-slot.filled{border-style:solid;border-color:#60a0d0;background:rgba(100,200,255,.06)}
+.tool-slot .se{font-size:1.6em;line-height:1}
+.tool-slot .sn{font-size:.55em;color:var(--text2);margin-top:1px;text-align:center;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tool-slot .sx{position:absolute;top:1px;right:2px;font-size:.6em;color:var(--accent2);cursor:pointer;opacity:0;transition:opacity .2s}
+.tool-slot:hover .sx{opacity:1}
+.tool-label{font-size:.7em;color:var(--text2)}
+.process-section{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;max-width:520px}
+.process-row{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.pbtn{padding:5px 10px;border-radius:7px;font-size:.7em;border:2px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.pbtn:hover:not(.locked){border-color:var(--accent);color:var(--accent)}
+.pbtn.active{border-color:var(--gold);color:var(--gold);background:rgba(255,215,0,.08);box-shadow:0 0 8px rgba(255,215,0,.15)}
+.pbtn.locked{opacity:.3;cursor:not-allowed}
+.pbtn .pi{font-size:1em}
+.pbtn .pt{font-size:.8em;opacity:.5}
+.cond-section{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;align-items:center;width:100%;max-width:520px}
+.cond-tag{padding:3px 8px;border-radius:6px;font-size:.65em;border:1px solid var(--border);background:var(--card);color:var(--text2);display:flex;align-items:center;gap:3px}
+.cond-tag.met{border-color:var(--success);color:var(--success)}
+.cond-tag.unmet{border-color:var(--accent2);color:var(--accent2);opacity:.6}
+.temp-section{display:flex;align-items:center;gap:10px}
+.temp-bar{width:18px;height:60px;background:var(--bg);border-radius:9px;border:1px solid var(--border);position:relative;overflow:hidden}
+.temp-fill{position:absolute;bottom:0;left:0;right:0;border-radius:0 0 9px 9px;transition:height .5s,background .5s}
+.temp-info{font-size:.7em;color:var(--text2);line-height:1.5}
+.temp-info b{color:var(--accent)}
+.action-row{display:flex;gap:8px;align-items:center}
+.cbtn{padding:8px 30px;font-size:.95em;font-weight:bold;border:none;border-radius:9px;cursor:pointer;transition:all .3s;letter-spacing:1px}
+.cbtn.active{background:linear-gradient(135deg,var(--accent),#c88020);color:#fff;box-shadow:0 3px 12px rgba(240,160,48,.35)}
+.cbtn.active:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(240,160,48,.45)}
+.cbtn.disabled{background:var(--border);color:var(--text2);cursor:not-allowed}
+.clrbtn{padding:6px 14px;font-size:.75em;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--text2);cursor:pointer;transition:all .3s}
+.clrbtn:hover{border-color:var(--accent2);color:var(--accent2)}
+.result-area{min-height:60px;display:flex;align-items:center;justify-content:center}
+.result-item{animation:discoverPop .6s ease-out;display:flex;flex-direction:column;align-items:center;gap:2px}
+.result-item .re{font-size:2.6em}
+.result-item .rn{font-size:.95em;font-weight:bold;color:var(--gold)}
+.result-item .ra{font-size:.65em;padding:1px 7px;border-radius:8px}
+.fail-text{color:var(--accent2);font-size:.85em;animation:shake .4s ease}
+.sidebar{width:280px;background:var(--bg2);border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sb-head{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sb-head h2{font-size:.9em;color:var(--gold)}
+.filter-row{display:flex;gap:2px;flex-wrap:wrap;padding:6px 8px;border-bottom:1px solid var(--border)}
+.fbtn{padding:2px 6px;font-size:.65em;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .3s;white-space:nowrap}
+.fbtn:hover,.fbtn.active{border-color:var(--gold);color:var(--gold);background:rgba(255,215,0,.06)}
+.igrid{flex:1;overflow-y:auto;padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:5px;align-content:start}
+.igrid::-webkit-scrollbar{width:4px}
+.igrid::-webkit-scrollbar-track{background:var(--bg)}
+.igrid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.icard{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;border-radius:8px;border:2px solid var(--border);background:var(--card);cursor:grab;transition:all .25s;min-height:66px}
+.icard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.icard:active{cursor:grabbing;transform:scale(.95)}
+.icard .ie{font-size:1.5em;line-height:1}
+.icard .iname{font-size:.55em;color:var(--text2);text-align:center;margin-top:1px;line-height:1.2;max-width:58px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.icard.newi{animation:discoverPop .5s ease-out}
+.sb-hint{padding:8px 12px;border-top:1px solid var(--border);background:rgba(0,0,0,.2)}
+.sb-hint h3{font-size:.7em;color:var(--accent);margin-bottom:3px}
+.sb-hint p{font-size:.65em;color:var(--text2);line-height:1.5}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.mbox{background:var(--bg2);border:2px solid var(--border);border-radius:14px;max-width:90vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+.mhead{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mhead h2{font-size:1em;color:var(--gold)}
+.mclose{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:1.1em;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
+.mclose:hover{border-color:var(--accent2);color:var(--accent2)}
+.mbody{flex:1;overflow:auto;padding:16px}
+.disc-m .mbox{max-width:340px;text-align:center}
+.de{font-size:3.5em;display:block;margin:8px 0;animation:discoverPop .6s ease-out}
+.dn{font-size:1.4em;font-weight:bold;color:var(--gold);margin-bottom:4px}
+.da{display:inline-block;padding:3px 12px;border-radius:10px;font-size:.8em;margin-bottom:6px}
+.dd{color:var(--text2);font-size:.85em;margin-bottom:4px}
+.dr{font-size:.7em;color:var(--text2);background:var(--card);padding:5px 10px;border-radius:6px;display:inline-block;margin-top:3px}
+.dreq{font-size:.7em;color:var(--accent);margin-top:3px}
+.tree-m .mbox{width:95vw;max-width:1400px;height:85vh}
+.tc{width:100%;height:100%;position:relative;overflow:hidden;cursor:grab;touch-action:none}
+.tc:active{cursor:grabbing}
+.tc-inner{position:absolute;transform-origin:0 0;will-change:transform}
+.tc svg{position:absolute;top:0;left:0;pointer-events:none}
+.tc-zoom{position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:4px;z-index:10}
+.tc-zoom button{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.tc-zoom button:hover{background:var(--card2);border-color:var(--gold)}
+.tc-zoom .zlabel{font-size:.55em;text-align:center;color:var(--text2);padding:2px 0}
+.tc-minimap{position:absolute;bottom:12px;left:12px;width:120px;height:80px;background:var(--bg);border:1px solid var(--border);border-radius:6px;overflow:hidden;z-index:10;opacity:.7}
+.tc-minimap:hover{opacity:1}
+.tc-minimap canvas{width:100%;height:100%}
+.tc-vp{position:absolute;border:1.5px solid var(--gold);border-radius:2px;pointer-events:none}
+.tn{position:absolute;width:64px;display:flex;flex-direction:column;align-items:center;padding:3px 1px;border-radius:7px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:all .3s;z-index:2}
+.tn:hover{border-color:var(--gold);transform:scale(1.08);z-index:3}
+.tn.disc{border-color:var(--accent)}
+.tn.undisc{opacity:.25;filter:grayscale(1)}
+.tn .te{font-size:1.3em;line-height:1}
+.tn .tt{font-size:.45em;color:var(--text2);text-align:center;margin-top:1px;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tl{position:absolute;left:0;width:100%;text-align:center;font-size:.65em;color:var(--text2);opacity:.4;pointer-events:none}
+.enc-m .mbox{width:90vw;max-width:800px;height:80vh}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.ecard{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px;display:flex;gap:8px;align-items:flex-start}
+.ecard .ee{font-size:1.8em;flex-shrink:0}
+.ecard .ei{flex:1;min-width:0}
+.ecard .en{font-size:.85em;font-weight:bold;color:var(--gold)}
+.ecard .ea{font-size:.6em;padding:1px 5px;border-radius:6px;display:inline-block;margin:1px 0}
+.ecard .ed{font-size:.65em;color:var(--text2);line-height:1.3}
+.ecard .er{font-size:.55em;color:var(--text2);margin-top:3px;opacity:.6}
+@media(max-width:768px){
+body{padding-bottom:env(safe-area-inset-bottom)}
+.header{padding:4px 8px;gap:3px;padding-top:calc(4px + env(safe-area-inset-top,0px))}
+.header h1{font-size:.75em}
+.hbtn{padding:3px 6px;font-size:.55em}
+.progress-wrap{gap:4px;min-width:80px}
+.progress-bar{height:6px}
+.progress-text{font-size:.6em}
+.era-badge{padding:2px 8px;font-size:.6em}
+.main{flex-direction:column;height:calc(100vh - 38px - env(safe-area-inset-top,0px) - 46px);height:calc(100dvh - 38px - env(safe-area-inset-top,0px) - 46px)}
+.workspace{min-height:0;flex:1;padding:4px 6px;gap:4px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sidebar{width:100%;flex:1;border-left:none;border-top:2px solid var(--border);display:none}
+.sidebar.mob-show{display:flex}
+.craft-area{gap:4px;min-height:60px}
+.craft-slot{width:54px;height:62px;border-radius:8px}
+.craft-slot .se{font-size:1.3em}
+.craft-slot .sn{font-size:.42em;max-width:48px}
+.craft-slot .sx{opacity:1;font-size:.7em;right:1px;top:0}
+.craft-plus{font-size:1em}
+.tool-slot-wrap{gap:4px;margin-top:1px}
+.tool-slot{width:48px;height:54px;border-radius:7px}
+.tool-slot .se{font-size:1.2em}
+.tool-slot .sn{font-size:.42em;max-width:42px}
+.tool-slot .sx{opacity:1;font-size:.6em}
+.tool-label{font-size:.55em}
+.process-section{gap:3px}
+.process-row{gap:2px}
+.pbtn{padding:3px 5px;font-size:.5em;border-radius:5px}
+.cond-section{gap:2px}
+.cond-tag{font-size:.45em;padding:1px 5px}
+.temp-section{gap:4px}
+.temp-bar{width:12px;height:40px}
+.temp-info{font-size:.5em;line-height:1.3}
+.action-row{gap:4px}
+.cbtn{padding:5px 16px;font-size:.75em;border-radius:7px}
+.clrbtn{padding:3px 8px;font-size:.55em}
+.result-area{min-height:40px}
+.result-item .re{font-size:2em}
+.result-item .rn{font-size:.75em}
+.ws-hint{font-size:.6em}
+.igrid{grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:3px;padding:4px}
+.icard{min-height:50px;padding:3px 1px;border-radius:6px}
+.icard .ie{font-size:1.2em}
+.icard .iname{font-size:.42em}
+.sb-head{padding:4px 8px}
+.sb-head h2{font-size:.75em}
+.filter-row{padding:3px 4px;gap:1px}
+.fbtn{padding:1px 4px;font-size:.5em}
+.sb-hint{padding:4px 8px}
+.sb-hint h3{font-size:.55em}
+.sb-hint p{font-size:.5em}
+.mob-tab{display:flex}
+.egrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.ecard .ee{font-size:1.3em}
+.ecard .en{font-size:.7em}
+.ecard .ed{font-size:.5em}
+.ecard .er{font-size:.4em}
+.mbox{max-width:95vw;max-height:85vh;border-radius:10px}
+.mhead{padding:6px 10px}
+.mhead h2{font-size:.8em}
+.mbody{padding:8px}
+.de{font-size:2.8em}
+.dn{font-size:1.1em}
+.da{font-size:.7em}
+.dd{font-size:.75em}
+.dr{font-size:.6em}
+.dreq{font-size:.6em}
+}
+.mob-tab{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:2px solid var(--border);z-index:100;padding:4px 0;padding-bottom:env(safe-area-inset-bottom)}
+.mob-tab button{flex:1;padding:8px 0;border:none;background:transparent;color:var(--text2);font-size:.7em;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer}
+.mob-tab button.active{color:var(--gold)}
+.mob-tab button span{font-size:1.3em}
+.tool-pick-m .mbox{max-width:320px}
+.tp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
+.tp-item{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-radius:8px;border:2px solid var(--border);background:var(--card);cursor:pointer;transition:all .2s}
+.tp-item:hover,.tp-item:active{border-color:var(--gold);background:rgba(255,215,0,.06)}
+.tp-item .tp-e{font-size:1.8em}
+.tp-item .tp-n{font-size:.6em;color:var(--text2);margin-top:2px}
+.tp-empty{padding:10px;text-align:center;color:var(--text2);font-size:.8em}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>⚒️ 人类工具进化史</h1>
+<div class="progress-wrap">
+<div class="progress-bar"><div class="progress-fill" id="pf" style="width:0%"></div></div>
+<span class="progress-text" id="pt">0/0</span>
+</div>
+<div class="era-badge" id="eb">🌍 原始</div>
+<button class="hbtn" onclick="showTree()">🌳 技能树</button>
+<button class="hbtn" onclick="showEnc()">📖 图鉴</button>
+<button class="hbtn" onclick="resetGame()">🔄 重置</button>
+</div>
+<div class="main">
+<div class="workspace">
+<div class="ws-hint" id="wh">👇 点击材料放入合成台</div>
+<div class="craft-area" id="ca"></div>
+<div class="tool-slot-wrap">
+<span class="tool-label">🔧 工具:</span>
+<div class="tool-slot" id="ts" onclick="showToolPick()" ondragover="onDragOver(event)" ondrop="onToolDrop(event)" ondragleave="onDragLeave(event)">
+<span class="se" style="opacity:.2">🔧</span>
+<span class="sn" style="opacity:.25">工具位</span>
+</div>
+<span class="tool-label" style="font-size:.6em;color:var(--text2)">(点击选择，不消耗)</span>
+</div>
+<div class="process-section">
+<div class="process-row" id="pr"></div>
+<div class="cond-section" id="cs"></div>
+<div class="temp-section">
+<div class="temp-bar"><div class="temp-fill" id="tf"></div></div>
+<div class="temp-info" id="ti">最高温度: --</div>
+</div>
+</div>
+<div class="action-row">
+<button class="cbtn disabled" id="cb" onclick="tryCombine()">⚡ 合成</button>
+<button class="clrbtn" onclick="clearAll()">清空</button>
+</div>
+<div class="result-area" id="ra"></div>
+</div>
+<div class="sidebar">
+<div class="sb-head"><h2>📦 已发现</h2></div>
+<div class="filter-row" id="fr"></div>
+<div class="igrid" id="ig"></div>
+<div class="sb-hint">
+<h3>💡 提示</h3>
+<p id="sh">先想办法生火吧！试试用石头碰撞产生火花…</p>
+</div>
+</div>
+</div>
+<div class="modal disc-m" id="dm"><div class="mbox"><div class="mhead"><h2>🎉 新发现！</h2><button class="mclose" onclick="cm('dm')">✕</button></div><div class="mbody" id="db"></div></div></div>
+<div class="modal tree-m" id="tm"><div class="mbox"><div class="mhead"><h2>🌳 技能树</h2><button class="mclose" onclick="cm('tm')">✕</button></div><div class="mbody" style="padding:0"><div class="tc" id="tcon"></div></div></div></div>
+<div class="modal enc-m" id="em"><div class="mbox"><div class="mhead"><h2>📖 工具图鉴</h2><button class="mclose" onclick="cm('em')">✕</button></div><div class="mbody" id="eb2"></div></div></div>
+<div class="modal tool-pick-m" id="tpm"><div class="mbox"><div class="mhead"><h2>🔧 选择工具</h2><button class="mclose" onclick="cm('tpm')">✕</button></div><div class="mbody" id="tpb"></div></div></div>
+<div class="mob-tab" id="mtab">
+<button class="active" onclick="mobTab('craft')"><span>⚒️</span>合成</button>
+<button onclick="mobTab('inv')"><span>📦</span>物品</button>
+<button onclick="mobTab('tree')"><span>🌳</span>技能树</button>
+<button onclick="mobTab('enc')"><span>📖</span>图鉴</button>
+</div>
+<script>
+const I={
+stone:{n:'石头',e:'🪨',era:'base',d:'大地之骨，万物之基'},
+wood:{n:'木头',e:'🪵',era:'base',d:'森林的馈赠，燃烧与建造'},
+clay:{n:'黏土',e:'🟤',era:'base',d:'河岸的细腻泥土，遇水可塑'},
+freshwater:{n:'淡水',e:'💧',era:'base',d:'河流湖泊之水，生命之源'},
+seawater:{n:'海水',e:'🌊',era:'base',d:'咸涩的海水，蕴含盐与矿物'},
+sand:{n:'沙子',e:'🏖️',era:'base',d:'细碎的石英颗粒，玻璃的前身'},
+flint:{n:'燧石',e:'💎',era:'stone',d:'坚硬的石头，碰撞生火'},
+stick:{n:'木棍',e:'🏏',era:'stone',d:'加工后的直木，工具的骨架'},
+plant_fiber:{n:'植物纤维',e:'🌿',era:'stone',d:'从草茎树皮中提取，可编织'},
+salt:{n:'盐',e:'🧂',era:'stone',d:'海水蒸发后的白色结晶，调味与防腐'},
+brine:{n:'卤水',e:'🧪',era:'stone',d:'浓缩的盐水，含有多种矿物'},
+pottery_clay:{n:'陶土',e:'🟫',era:'stone',d:'黏土与水的融合，等火来烧'},
+spark:{n:'火花',e:'✨',era:'stone',d:'燧石碰撞的瞬间，文明的种子'},
+friction:{n:'摩擦热',e:'🥵',era:'stone',d:'钻木取火，耐心与智慧'},
+rope:{n:'绳索',e:'🪢',era:'stone',d:'纤维编织而成，捆绑连接'},
+fire:{n:'火',e:'🔥',era:'stone',d:'文明的起点！人类驾驭的第一种力量'},
+stone_axe:{n:'石斧',e:'🪓',era:'stone',d:'砍伐树木的第一把利器',tool:true},
+stone_hammer:{n:'石锤',e:'🔨',era:'stone',d:'敲击万物，塑造世界',tool:true},
+spear:{n:'矛',e:'🗡️',era:'stone',d:'远程狩猎，生存之道'},
+campfire:{n:'营火',e:'🔥',era:'stone',d:'第一缕文明之火，温度600°C',heat:true,maxT:600},
+plank:{n:'木板',e:'🟫',era:'stone',d:'平整的木材，建造的基础'},
+gravel:{n:'碎石',e:'🪨',era:'stone',d:'破碎的石头，建筑骨料'},
+copper_ore:{n:'铜矿石',e:'🟤',era:'stone',d:'蓝绿色的含铜矿石，孔雀石'},
+tin_ore:{n:'锡矿石',e:'⬜',era:'stone',d:'锡石，与铜合成青铜'},
+iron_ore:{n:'铁矿石',e:'⬛',era:'stone',d:'赤红色的含铁矿石'},
+charcoal:{n:'木炭',e:'⬛',era:'stone',d:'木材不完全燃烧的精华，冶炼之钥'},
+ash:{n:'草木灰',e:'🤍',era:'stone',d:'植物燃烧后的灰烬，含碱'},
+lye:{n:'碱液',e:'🧪',era:'stone',d:'草木灰溶于水，碱性溶液'},
+soap:{n:'肥皂',e:'🧼',era:'stone',d:'油脂与碱液的产物，清洁之物'},
+pottery:{n:'陶器',e:'🏺',era:'stone',d:'人类第一种人造容器'},
+brick:{n:'砖',e:'🧱',era:'stone',d:'泥土经火，坚如磐石'},
+mortar:{n:'砂浆',e:'🧴',era:'stone',d:'粘合砖石的黏结剂'},
+wooden_hut:{n:'木屋',e:'🏠',era:'stone',d:'遮风挡雨的第一个家'},
+dried_fish:{n:'鱼干',e:'🐟',era:'stone',d:'盐腌日晒，保存食物'},
+leather:{n:'皮革',e:'🟫',era:'stone',d:'动物皮经处理后的材料'},
+seed:{n:'种子',e:'🌱',era:'stone',d:'植物的希望，农业的起点'},
+wheat:{n:'小麦',e:'🌾',era:'stone',d:'从种子到粮食，文明的食粮'},
+flour:{n:'面粉',e:'🤍',era:'stone',d:'研磨小麦，面包的基础'},
+bread:{n:'面包',e:'🍞',era:'stone',d:'面粉与火的结合，主食'},
+yeast:{n:'酵母',e:'🦠',era:'stone',d:'微小的生命，发酵的功臣'},
+ferment:{n:'发酵',e:'🫧',era:'stone',d:'微生物的魔法，糖变酒精'},
+beer:{n:'啤酒',e:'🍺',era:'stone',d:'发酵的奇迹，最早的生物技术'},
+kiln:{n:'窑炉',e:'🏠',era:'bronze',d:'可控之火，温度1000°C',heat:true,maxT:1000},
+limestone:{n:'石灰',e:'⬜',era:'bronze',d:'石头煅烧后的白色粉末'},
+quicklime:{n:'生石灰',e:'⚪',era:'bronze',d:'高温煅烧石灰石，遇水剧烈发热'},
+glass:{n:'玻璃',e:'🪟',era:'bronze',d:'沙与火的奇迹，透明的革命'},
+copper:{n:'铜锭',e:'🟤',era:'bronze',d:'人类冶炼的第一种金属'},
+tin:{n:'锡锭',e:'⬜',era:'bronze',d:'低熔点金属，青铜的搭档'},
+bronze:{n:'青铜',e:'🟡',era:'bronze',d:'铜锡合金，开启青铜时代'},
+copper_tool:{n:'铜工具',e:'🔧',era:'bronze',d:'比石器更锋利的金属工具',tool:true},
+mirror:{n:'镜子',e:'🪞',era:'bronze',d:'人类第一次看清自己'},
+forge:{n:'锻炉',e:'🔥',era:'bronze',d:'锻造之火，温度1200°C',heat:true,maxT:1200},
+wheel:{n:'轮子',e:'☸️',era:'bronze',d:'圆形的智慧，运输的革命'},
+cart:{n:'手推车',e:'🛒',era:'bronze',d:'轮子与车的结合，运输之力'},
+sulfur:{n:'硫磺',e:'🟡',era:'bronze',d:'火山口的黄色晶体，燃烧刺鼻'},
+saltpeter:{n:'硝石',e:'⬜',era:'bronze',d:'洞穴墙壁的白色结晶'},
+gunpowder:{n:'火药',e:'💥',era:'bronze',d:'硫磺+硝石+木炭，爆炸的力量'},
+ink:{n:'墨',e:'🖤',era:'bronze',d:'炭黑与胶的混合，书写之液'},
+paper:{n:'纸',e:'📜',era:'bronze',d:'植物纤维的薄层，文明的载体'},
+iron:{n:'铁锭',e:'⬛',era:'iron',d:'更坚硬的金属，更强的工具'},
+steel:{n:'钢',e:'🔩',era:'iron',d:'铁与碳的完美结合，强度与韧性的平衡'},
+iron_sword:{n:'铁剑',e:'⚔️',era:'iron',d:'冷兵器时代的王者'},
+iron_tool:{n:'铁工具',e:'🔨',era:'iron',d:'铁器时代的万能工具',tool:true},
+annealed_steel:{n:'退火钢',e:'🛡️',era:'iron',d:'加热后缓慢冷却，韧性倍增'},
+hardened_steel:{n:'淬火钢',e:'⚡',era:'iron',d:'加热后急速水冷，硬度极高'},
+gear:{n:'齿轮',e:'⚙️',era:'iron',d:'机械文明的心脏'},
+wire:{n:'电线',e:'🔌',era:'iron',d:'金属的丝线，能量的通道'},
+armor:{n:'铠甲',e:'🛡️',era:'iron',d:'钢铁之躯，刀枪不入'},
+nail:{n:'钉子',e:'📌',era:'iron',d:'小小的连接，大大的作用'},
+blast_furnace:{n:'高炉',e:'🏭',era:'iron',d:'工业之火，温度1500°C',heat:true,maxT:1500},
+compass:{n:'指南针',e:'🧭',era:'iron',d:'磁与铁的指引，航海的钥匙'},
+telescope:{n:'望远镜',e:'🔭',era:'iron',d:'透镜组合，窥探宇宙'},
+microscope:{n:'显微镜',e:'🔬',era:'iron',d:'透镜组合，窥探微观'},
+cell:{n:'细胞',e:'🧫',era:'iron',d:'生命的基本单位，微观世界'},
+bacteria:{n:'细菌',e:'🦠',era:'iron',d:'最小的生命，无处不在'},
+steam:{n:'蒸汽',e:'💨',era:'industrial',d:'水与火的舞蹈，动力之源'},
+steam_engine:{n:'蒸汽机',e:'🚂',era:'industrial',d:'工业革命的引擎'},
+cement:{n:'水泥',e:'🏗️',era:'industrial',d:'石灰与黏土的建筑革命'},
+concrete:{n:'混凝土',e:'🧱',era:'industrial',d:'水泥+碎石+水，现代建筑骨骼'},
+reinforced_concrete:{n:'钢筋混凝土',e:'🏢',era:'industrial',d:'混凝土+钢筋，坚不可摧'},
+building:{n:'高楼',e:'🏢',era:'industrial',d:'钢铁与混凝土的丰碑'},
+magnet:{n:'磁铁',e:'🧲',era:'industrial',d:'无形的力，电的先驱'},
+electricity:{n:'电',e:'⚡',era:'industrial',d:'驱动现代文明的隐形力量'},
+lightbulb:{n:'灯泡',e:'💡',era:'industrial',d:'驱散黑暗的人造太阳'},
+factory:{n:'工厂',e:'🏭',era:'industrial',d:'大规模生产的机器巨兽'},
+lens:{n:'透镜',e:'🔍',era:'industrial',d:'弯曲光线，窥探微观与远方'},
+arc_furnace:{n:'电弧炉',e:'⚡',era:'industrial',d:'电之烈焰，温度3000°C',heat:true,maxT:3000},
+battery:{n:'电池',e:'🔋',era:'industrial',d:'化学能转化为电能的装置'},
+dynamo:{n:'发电机',e:'⚡',era:'industrial',d:'机械能转化为电能'},
+motor:{n:'电动机',e:'🔄',era:'industrial',d:'电能转化为机械能'},
+antibiotic:{n:'抗生素',e:'💊',era:'industrial',d:'青霉素，对抗细菌的武器'},
+vaccine:{n:'疫苗',e:'💉',era:'industrial',d:'训练免疫系统，预防疾病'},
+fertilizer:{n:'化肥',e:'🧪',era:'industrial',d:'氮磷钾，农业的化学革命'},
+ammonia:{n:'氨',e:'🧪',era:'industrial',d:'哈伯法合成氨，固氮的奇迹'},
+nitric_acid:{n:'硝酸',e:'🧪',era:'industrial',d:'氨的氧化产物，化工之母'},
+plastic:{n:'塑料',e:'🛢️',era:'industrial',d:'石油的衍生物，万能材料'},
+rubber:{n:'橡胶',e:'⚫',era:'industrial',d:'弹性材料，轮胎与密封'},
+aluminum:{n:'铝',e:'🪙',era:'info',d:'轻量金属，电解得来'},
+pure_silicon:{n:'纯硅',e:'🖥️',era:'info',d:'沙子的终极蜕变，芯片之基'},
+chip:{n:'芯片',e:'💾',era:'info',d:'方寸之间，计算万物'},
+circuit:{n:'电路板',e:'📟',era:'info',d:'电子元件的家园'},
+monitor:{n:'显示器',e:'📺',era:'info',d:'数字世界的窗口'},
+computer:{n:'计算机',e:'💻',era:'info',d:'人类最伟大的发明之一'},
+harddrive:{n:'硬盘',e:'💿',era:'info',d:'存储一切的数字仓库'},
+smartphone:{n:'智能手机',e:'📱',era:'info',d:'掌中的整个世界'},
+internet:{n:'互联网',e:'🌐',era:'info',d:'连接全球的数字神经网络'},
+robot:{n:'机器人',e:'🤖',era:'info',d:'人类的造物，未来的伙伴'},
+rocket:{n:'火箭',e:'🚀',era:'info',d:'冲破天际，飞向星辰'},
+satellite:{n:'卫星',e:'🛰️',era:'info',d:'太空之眼，全球通信'},
+xray:{n:'X射线',e:'☢️',era:'info',d:'穿透物质的不可见光'},
+radioactive:{n:'放射性',e:'☢️',era:'info',d:'原子核的自发衰变，能量之源'},
+nuclear_fuel:{n:'核燃料',e:'⚛️',era:'info',d:'铀235，裂变的火种'},
+nuclear_reactor:{n:'核反应堆',e:'⚛️',era:'info',d:'受控核裂变，巨大能量',heat:true,maxT:3000},
+oil:{n:'石油',e:'🛢️',era:'info',d:'地下深处的黑色液体，工业的血液'},
+air:{n:'空气',e:'💨',era:'base',d:'无处不在的气体，含氮78%氧21%'},
+hydrogen:{n:'氢',e:'🎈',era:'info',d:'最轻的元素，聚变的燃料'},
+laser:{n:'激光',e:'🔴',era:'info',d:'受激辐射光，精密加工与通信'},
+ruby:{n:'红宝石',e:'💎',era:'stone',d:'含铬的氧化铝晶体，激光器的核心'},
+dna:{n:'DNA',e:'🧬',era:'bio',d:'生命的密码，双螺旋结构'},
+gene:{n:'基因',e:'🧬',era:'bio',d:'DNA上的遗传信息片段'},
+enzyme:{n:'酶',e:'⚗️',era:'bio',d:'生物催化剂，加速生命反应'},
+protein:{n:'蛋白质',e:'🥩',era:'bio',d:'氨基酸链折叠，生命的工作机器'},
+insulin:{n:'胰岛素',e:'💉',era:'bio',d:'基因工程产物，拯救糖尿病患者'},
+crispr:{n:'CRISPR',e:'✂️',era:'bio',d:'基因剪刀，精确编辑生命代码'},
+stem_cell:{n:'干细胞',e:'🫀',era:'bio',d:'未分化的万能细胞，再生医学'},
+synthetic_cell:{n:'合成细胞',e:'🧫',era:'bio',d:'人造生命，从零构建'},
+biofuel:{n:'生物燃料',e:'🌿',era:'bio',d:'藻类发酵产油，可再生能源'},
+artificial_organ:{n:'人造器官',e:'🫀',era:'bio',d:'3D打印+干细胞，替代衰竭器官'},
+virus:{n:'病毒',e:'🦠',era:'bio',d:'基因的载体，也是基因工程的工具'},
+mrna:{n:'mRNA',e:'🧬',era:'bio',d:'信使RNA，蛋白质的蓝图'},
+mrna_vaccine:{n:'mRNA疫苗',e:'💉',era:'bio',d:'核酸疫苗，快速应对新疫情'},
+superconductor:{n:'超导体',e:'❄️',era:'quantum',d:'零电阻材料，量子效应的宏观体现'},
+bose_einstein:{n:'玻色-爱因斯坦凝聚',e:'🌀',era:'quantum',d:'接近绝对零度，量子集体行为'},
+qubit:{n:'量子比特',e:'⚛️',era:'quantum',d:'叠加态的信息单元，0和1同时存在'},
+quantum_computer:{n:'量子计算机',e:'⚛️',era:'quantum',d:'量子并行计算，指数级加速'},
+quantum_key:{n:'量子密钥',e:'🔐',era:'quantum',d:'不可窃听的通信，物理定律保障'},
+quantum_sensor:{n:'量子传感器',e:'📡',era:'quantum',d:'量子纠缠探测，极限精度'},
+fusion_plasma:{n:'聚变等离子体',e:'☀️',era:'quantum',d:'1亿度高温，模拟太阳核心'},
+fusion_reactor:{n:'聚变反应堆',e:'☀️',era:'quantum',d:'受控核聚变，终极能源',heat:true,maxT:100000},
+antimatter:{n:'反物质',e:'💫',era:'quantum',d:'正反物质湮灭，100%质能转换'},
+dark_matter:{n:'暗物质',e:'🌑',era:'quantum',d:'宇宙质量的27%，看不见的引力'},
+wormhole:{n:'虫洞',e:'🕳️',era:'quantum',d:'时空隧道，理论上的星际捷径'},
+dyson_sphere:{n:'戴森球',e:'🌟',era:'quantum',d:'包裹恒星收集能量，II型文明'}
+};
+
+const P={
+handcraft:{n:'手工制作',i:'✋',minT:0,d:'无需热源，双手创造'},
+firing:{n:'烧制',i:'🔥',minT:600,d:'在火焰中烧制，改变材质'},
+smelting:{n:'冶炼',i:'♨️',minT:1000,d:'高温熔炼，提取金属'},
+forging:{n:'锻造',i:'🔨',minT:1200,d:'锤击热金属，塑造形态'},
+annealing:{n:'退火',i:'🌡️',minT:1200,d:'加热后缓慢冷却，增加韧性'},
+quenching:{n:'淬火',i:'💧',minT:1200,d:'加热后急速冷却，增加硬度'},
+refining:{n:'精炼',i:'⚗️',minT:1500,d:'极高温度，提纯金属'},
+electrolysis:{n:'电解',i:'⚡',minT:0,needElec:true,d:'用电分解，提取纯元素'},
+photolithography:{n:'光刻',i:'💡',minT:0,needElec:true,d:'纳米级精密加工，芯片制造'},
+fermentation:{n:'发酵',i:'🫧',minT:0,d:'微生物转化，酿造与制药'},
+cultivation:{n:'培养',i:'🧫',minT:0,needElec:true,d:'在受控环境中培养微生物或细胞'},
+genetic_engineering:{n:'基因工程',i:'🧬',minT:0,needElec:true,d:'编辑DNA，改造生命'},
+nuclear_reaction:{n:'核反应',i:'⚛️',minT:0,d:'原子核的裂变或聚变'},
+quantum_process:{n:'量子工艺',i:'⚛️',minT:0,needElec:true,d:'在量子层面操控物质'},
+cryogenics:{n:'超低温',i:'❄️',minT:0,needElec:true,d:'接近绝对零度的极端环境'}
+};
+
+const ERAS={
+base:{n:'原始元素',c:'#666',i:'🌍'},
+stone:{n:'石器时代',c:'#cd853f',i:'🪨'},
+bronze:{n:'青铜时代',c:'#daa520',i:'⚔️'},
+iron:{n:'铁器时代',c:'#8898b0',i:'🔩'},
+industrial:{n:'工业时代',c:'#e07020',i:'🏭'},
+info:{n:'信息时代',c:'#9060e0',i:'💻'},
+bio:{n:'生物时代',c:'#20b060',i:'🧬'},
+quantum:{n:'量子时代',c:'#4080ff',i:'⚛️'}
+};
+const EO=['base','stone','bronze','iron','industrial','info','bio','quantum'];
+const BASE=['stone','wood','clay','freshwater','seawater','sand','air'];
+const TOTAL=Object.keys(I).length;
+
+const R=[
+{i:['stone','stone'],p:'handcraft',r:'flint'},
+{i:['wood','wood'],p:'handcraft',r:'stick'},
+{i:['clay','freshwater'],p:'handcraft',r:'pottery_clay'},
+{i:['flint','stone'],p:'handcraft',r:'spark'},
+{i:['wood','stick'],p:'handcraft',r:'friction'},
+{i:['spark','wood'],p:'handcraft',r:'fire'},
+{i:['friction','wood'],p:'handcraft',r:'fire'},
+{i:['plant_fiber','plant_fiber'],p:'handcraft',r:'rope'},
+{i:['wood','plant_fiber'],p:'handcraft',r:'plant_fiber'},
+{i:['flint','stick'],p:'handcraft',r:'stone_axe'},
+{i:['stone','stick'],p:'handcraft',r:'stone_hammer'},
+{i:['flint','stick','rope'],p:'handcraft',r:'spear'},
+{i:['fire','stone'],p:'handcraft',r:'campfire'},
+{i:['seawater'],p:'firing',r:'salt'},
+{i:['seawater','salt'],p:'firing',r:'brine'},
+{i:['wood'],p:'firing',r:'charcoal'},
+{i:['wood'],p:'firing',r:'ash'},
+{i:['ash','freshwater'],p:'handcraft',r:'lye'},
+{i:['lye','ash'],p:'handcraft',r:'soap'},
+{i:['pottery_clay'],p:'firing',r:'pottery'},
+{i:['clay'],p:'firing',r:'brick'},
+{i:['stone'],p:'firing',r:'limestone'},
+{i:['sand'],p:'firing',r:'glass'},
+{i:['wood'],p:'handcraft',r:'plank',req:'stone_axe'},
+{i:['stone'],p:'handcraft',r:'gravel',req:'stone_hammer'},
+{i:['stone'],p:'handcraft',r:'copper_ore',req:'stone_hammer'},
+{i:['stone'],p:'handcraft',r:'tin_ore',req:'stone_hammer'},
+{i:['stone'],p:'handcraft',r:'iron_ore',req:'stone_hammer'},
+{i:['stone'],p:'handcraft',r:'ruby',req:'stone_hammer'},
+{i:['limestone','freshwater','sand'],p:'handcraft',r:'mortar'},
+{i:['plank','plank'],p:'handcraft',r:'wooden_hut'},
+{i:['salt','freshwater'],p:'firing',r:'dried_fish'},
+{i:['freshwater','ash'],p:'handcraft',r:'leather'},
+{i:['seed','freshwater'],p:'handcraft',r:'wheat'},
+{i:['wood'],p:'handcraft',r:'seed'},
+{i:['wheat','stone_hammer'],p:'handcraft',r:'flour'},
+{i:['flour','freshwater'],p:'firing',r:'bread'},
+{i:['wheat','freshwater'],p:'fermentation',r:'yeast'},
+{i:['yeast','wheat'],p:'fermentation',r:'ferment'},
+{i:['ferment','freshwater'],p:'fermentation',r:'beer'},
+{i:['brick','brick','brick'],p:'handcraft',r:'kiln'},
+{i:['stone'],p:'firing',r:'quicklime',need:'kiln'},
+{i:['copper_ore','charcoal'],p:'smelting',r:'copper'},
+{i:['tin_ore','charcoal'],p:'smelting',r:'tin'},
+{i:['copper','tin'],p:'smelting',r:'bronze'},
+{i:['copper','stick'],p:'handcraft',r:'copper_tool'},
+{i:['glass','copper'],p:'handcraft',r:'mirror'},
+{i:['brick','charcoal','copper_tool'],p:'handcraft',r:'forge'},
+{i:['plank','plank','stick'],p:'handcraft',r:'wheel'},
+{i:['wheel','wood','rope'],p:'handcraft',r:'cart'},
+{i:['stone'],p:'handcraft',r:'sulfur',req:'stone_hammer'},
+{i:['stone'],p:'handcraft',r:'saltpeter',req:'stone_hammer'},
+{i:['sulfur','saltpeter','charcoal'],p:'handcraft',r:'gunpowder'},
+{i:['plant_fiber','freshwater'],p:'handcraft',r:'paper'},
+{i:['ash','freshwater'],p:'handcraft',r:'ink'},
+{i:['iron_ore','charcoal','charcoal'],p:'smelting',r:'iron',need:'forge'},
+{i:['iron','stick'],p:'forging',r:'iron_sword'},
+{i:['iron','stone_hammer'],p:'forging',r:'iron_tool'},
+{i:['iron','charcoal'],p:'forging',r:'steel'},
+{i:['steel'],p:'annealing',r:'annealed_steel'},
+{i:['steel','freshwater'],p:'quenching',r:'hardened_steel'},
+{i:['steel','steel'],p:'handcraft',r:'gear',req:'iron_tool'},
+{i:['copper','copper'],p:'handcraft',r:'wire',req:'iron_tool'},
+{i:['steel','steel','steel'],p:'handcraft',r:'armor',need:'forge'},
+{i:['iron'],p:'handcraft',r:'nail',req:'iron_tool'},
+{i:['brick','brick','iron'],p:'handcraft',r:'blast_furnace'},
+{i:['magnet','iron'],p:'handcraft',r:'compass'},
+{i:['lens','lens'],p:'handcraft',r:'telescope'},
+{i:['lens','lens','lens'],p:'handcraft',r:'microscope'},
+{i:['microscope','freshwater'],p:'handcraft',r:'cell'},
+{i:['cell','freshwater'],p:'cultivation',r:'bacteria'},
+{i:['freshwater','campfire'],p:'firing',r:'steam'},
+{i:['steam','gear','iron'],p:'handcraft',r:'steam_engine',req:'iron_tool'},
+{i:['limestone','clay','gravel'],p:'handcraft',r:'cement'},
+{i:['cement','gravel','freshwater'],p:'handcraft',r:'concrete'},
+{i:['concrete','steel','steel'],p:'handcraft',r:'reinforced_concrete'},
+{i:['reinforced_concrete','reinforced_concrete','glass'],p:'handcraft',r:'building'},
+{i:['iron','flint'],p:'handcraft',r:'magnet'},
+{i:['magnet','wire'],p:'handcraft',r:'dynamo'},
+{i:['dynamo','steam_engine'],p:'handcraft',r:'electricity'},
+{i:['electricity','wire'],p:'handcraft',r:'motor'},
+{i:['electricity','glass'],p:'handcraft',r:'lightbulb'},
+{i:['steam_engine','building'],p:'handcraft',r:'factory'},
+{i:['glass','glass'],p:'handcraft',r:'lens'},
+{i:['copper','iron','freshwater'],p:'handcraft',r:'battery'},
+{i:['steel','electricity','wire'],p:'handcraft',r:'arc_furnace'},
+{i:['bacteria','freshwater'],p:'cultivation',r:'antibiotic'},
+{i:['bacteria','freshwater'],p:'cultivation',r:'vaccine'},
+{i:['electricity','freshwater','air'],p:'handcraft',r:'ammonia'},
+{i:['ammonia','electricity'],p:'handcraft',r:'nitric_acid'},
+{i:['ammonia','nitric_acid'],p:'handcraft',r:'fertilizer'},
+{i:['fertilizer','seed'],p:'handcraft',r:'wheat'},
+{i:['oil','electricity'],p:'handcraft',r:'plastic'},
+{i:['oil','sulfur'],p:'handcraft',r:'rubber'},
+{i:['iron_ore','electricity'],p:'electrolysis',r:'aluminum'},
+{i:['sand','electricity'],p:'electrolysis',r:'pure_silicon'},
+{i:['pure_silicon','pure_silicon','electricity'],p:'photolithography',r:'chip'},
+{i:['chip','copper','wire'],p:'handcraft',r:'circuit'},
+{i:['glass','circuit'],p:'handcraft',r:'monitor'},
+{i:['circuit','circuit','chip'],p:'handcraft',r:'computer'},
+{i:['computer','magnet'],p:'handcraft',r:'harddrive'},
+{i:['computer','monitor','aluminum'],p:'handcraft',r:'smartphone'},
+{i:['computer','wire','electricity'],p:'handcraft',r:'internet'},
+{i:['computer','gear','steel'],p:'handcraft',r:'robot'},
+{i:['steel','steam_engine','electricity'],p:'handcraft',r:'rocket'},
+{i:['rocket','electricity','wire'],p:'handcraft',r:'satellite'},
+{i:['electricity','lens'],p:'handcraft',r:'xray'},
+{i:['stone','stone_hammer'],p:'handcraft',r:'oil'},
+{i:['freshwater','electricity'],p:'electrolysis',r:'hydrogen'},
+{i:['electricity','ruby'],p:'handcraft',r:'laser'},
+{i:['xray','iron_ore'],p:'handcraft',r:'radioactive'},
+{i:['radioactive','iron_ore'],p:'nuclear_reaction',r:'nuclear_fuel'},
+{i:['nuclear_fuel','concrete','steel'],p:'handcraft',r:'nuclear_reactor'},
+{i:['cell','microscope'],p:'handcraft',r:'dna'},
+{i:['dna','enzyme'],p:'genetic_engineering',r:'gene'},
+{i:['cell','ferment'],p:'cultivation',r:'enzyme'},
+{i:['gene','cell'],p:'genetic_engineering',r:'protein'},
+{i:['gene','bacteria'],p:'genetic_engineering',r:'insulin'},
+{i:['gene','enzyme'],p:'genetic_engineering',r:'crispr'},
+{i:['cell','crispr'],p:'genetic_engineering',r:'stem_cell'},
+{i:['stem_cell','crispr'],p:'genetic_engineering',r:'synthetic_cell'},
+{i:['wheat','ferment','electricity'],p:'fermentation',r:'biofuel'},
+{i:['stem_cell','plastic'],p:'handcraft',r:'artificial_organ'},
+{i:['dna','cell'],p:'genetic_engineering',r:'virus'},
+{i:['dna','enzyme'],p:'genetic_engineering',r:'mrna'},
+{i:['mrna','virus'],p:'genetic_engineering',r:'mrna_vaccine'},
+{i:['electricity','electricity'],p:'cryogenics',r:'superconductor'},
+{i:['superconductor','electricity'],p:'cryogenics',r:'bose_einstein'},
+{i:['superconductor','chip'],p:'quantum_process',r:'qubit'},
+{i:['qubit','qubit','chip'],p:'quantum_process',r:'quantum_computer'},
+{i:['qubit','laser'],p:'quantum_process',r:'quantum_key'},
+{i:['qubit','electricity'],p:'quantum_process',r:'quantum_sensor'},
+{i:['nuclear_reactor','hydrogen'],p:'nuclear_reaction',r:'fusion_plasma'},
+{i:['fusion_plasma','magnet'],p:'nuclear_reaction',r:'fusion_reactor'},
+{i:['fusion_plasma','electricity'],p:'quantum_process',r:'antimatter'},
+{i:['quantum_sensor','telescope'],p:'quantum_process',r:'dark_matter'},
+{i:['dark_matter','antimatter'],p:'quantum_process',r:'wormhole'},
+{i:['fusion_reactor','satellite','satellite'],p:'handcraft',r:'dyson_sphere'}
+];
+
+let disc=new Set(BASE);
+let slots=[null,null,null,null];
+let toolSlot=null;
+let selProc='handcraft';
+let curFilter='all';
+let newI=new Set();
+let dragId=null;
+
+function maxT(){let m=0;disc.forEach(id=>{if(I[id].heat)m=Math.max(m,I[id].maxT)});return m}
+function hasElec(){return disc.has('electricity')}
+function procAvail(pid){const p=P[pid];if(p.needElec)return hasElec();return maxT()>=p.minT}
+function toolAvail(req){return!req||disc.has(req)}
+function toolInSlot(req){return!req||(toolSlot===req)}
+
+function init(){
+loadGame();
+renderCraft();
+renderProc();
+renderCond();
+renderFilter();
+renderItems();
+updateTemp();
+updateProgress();
+updateHints();
+}
+
+function renderCraft(){
+const a=document.getElementById('ca');
+let h='';
+for(let i=0;i<4;i++){
+if(i>0)h+='<span class="craft-plus">+</span>';
+const id=slots[i];
+if(id){
+h+=`<div class="craft-slot filled" data-s="${i}" ondragover="onDragOver(event)" ondrop="onDrop(event,${i})" ondragleave="onDragLeave(event)"><span class="sx" onclick="clearSlot(${i})">✕</span><span class="se">${I[id].e}</span><span class="sn">${I[id].n}</span></div>`;
+}else{
+h+=`<div class="craft-slot" data-s="${i}" ondragover="onDragOver(event)" ondrop="onDrop(event,${i})" ondragleave="onDragLeave(event)"><span class="se" style="opacity:.15">➕</span><span class="sn" style="opacity:.2">空位</span></div>`;
+}
+}
+a.innerHTML=h;
+const ts=document.getElementById('ts');
+if(toolSlot){
+ts.innerHTML=`<span class="sx" onclick="clearTool()">✕</span><span class="se">${I[toolSlot].e}</span><span class="sn">${I[toolSlot].n}</span>`;
+ts.className='tool-slot filled';
+}else{
+ts.innerHTML=`<span class="se" style="opacity:.2">🔧</span><span class="sn" style="opacity:.25">工具位</span>`;
+ts.className='tool-slot';
+}
+updateBtn();
+}
+
+function renderProc(){
+const row=document.getElementById('pr');
+let h='';
+Object.entries(P).forEach(([id,p])=>{
+const av=procAvail(id);
+const ac=selProc===id;
+h+=`<button class="pbtn${ac?' active':''}${av?'':' locked'}" onclick="selProcFn('${id}')" ${av?'':'title="需要更高级热源或电力"'}><span class="pi">${p.i}</span>${p.n}${p.minT>0?`<span class="pt">${p.minT}°C</span>`:''}</button>`;
+});
+row.innerHTML=h;
+}
+
+function selProcFn(id){if(!procAvail(id))return;selProc=id;renderProc();renderCond();updateTemp();updateHints()}
+
+function renderCond(){
+const cs=document.getElementById('cs');
+const filled=slots.filter(s=>s!==null);
+let conditions=[];
+const proc=P[selProc];
+if(proc.minT>0){
+const ok=maxT()>=proc.minT;
+conditions.push({met:ok,label:`🌡️ 温度≥${proc.minT}°C ${ok?'✓':'✗'}`});
+}
+if(proc.needElec){
+const ok=hasElec();
+conditions.push({met:ok,label:`⚡ 电力 ${ok?'✓':'✗'}`});
+}
+const matching=findRecipeNoReq(filled,selProc);
+if(matching&&matching.need){
+const ok=disc.has(matching.need);
+conditions.push({met:ok,label:`🏗️ 需要${I[matching.need].n} ${ok?'✓':'(未发现)✗'}`});
+}
+if(matching&&matching.req){
+const ok=disc.has(matching.req);
+const inSlot=toolSlot===matching.req;
+conditions.push({met:ok&&inSlot,label:`🔧 装备${I[matching.req].n} ${inSlot?'(已装备)✓':ok?'(已发现，请装备)':'(未发现)✗'}`});
+}
+cs.innerHTML=conditions.map(c=>`<span class="cond-tag ${c.met?'met':'unmet'}">${c.label}</span>`).join('');
+}
+
+function updateTemp(){
+const mt=maxT();
+const proc=P[selProc];
+const fill=document.getElementById('tf');
+const info=document.getElementById('ti');
+const pct=mt>0?Math.min(mt/3000*100,100):0;
+let c='#666';
+if(mt>=3000)c='#9060e0';else if(mt>=1500)c='#e07020';else if(mt>=1200)c='#8898b0';else if(mt>=1000)c='#daa520';else if(mt>=600)c='#cd853f';
+fill.style.height=pct+'%';
+fill.style.background=`linear-gradient(to top,${c},${c}88)`;
+let hn='无';
+if(mt>=3000)hn='电弧炉';else if(mt>=1500)hn='高炉';else if(mt>=1200)hn='锻炉';else if(mt>=1000)hn='窑炉';else if(mt>=600)hn='营火';
+info.innerHTML=`最高温度: <b>${mt>0?mt+'°C':'--'}</b> (${hn})<br>工艺需要: <b>${proc.minT>0?proc.minT+'°C':'无需热源'}</b><br>${proc.d}`;
+}
+
+function renderFilter(){
+const row=document.getElementById('fr');
+let h=`<button class="fbtn${curFilter==='all'?' active':''}" onclick="setF('all',this)">全部</button>`;
+EO.forEach(era=>{
+const cnt=[...disc].filter(id=>I[id].era===era).length;
+const tot=Object.values(I).filter(i=>i.era===era).length;
+h+=`<button class="fbtn${curFilter===era?' active':''}" onclick="setF('${era}',this)">${ERAS[era].i}${cnt}/${tot}</button>`;
+});
+row.innerHTML=h;
+}
+
+function setF(f,el){curFilter=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderItems()}
+
+function renderItems(){
+const grid=document.getElementById('ig');
+const sorted=[...disc].sort((a,b)=>{const ea=EO.indexOf(I[a].era),eb=EO.indexOf(I[b].era);return ea!==eb?ea-eb:a.localeCompare(b)});
+let h='';
+sorted.forEach(id=>{
+const it=I[id];
+if(curFilter!=='all'&&it.era!==curFilter)return;
+const nw=newI.has(id);
+h+=`<div class="icard${nw?' newi':''}" draggable="true" ondragstart="onDS(event,'${id}')" onclick="addSlot('${id}')" title="${it.d}${it.tool?' [工具]':''}${it.heat?' [热源 '+it.maxT+'°C]':''}"><span class="ie">${it.e}</span><span class="iname">${it.n}${it.tool?'🔧':''}${it.heat?'🔥':''}</span></div>`;
+});
+grid.innerHTML=h;
+newI.clear();
+}
+
+function onDS(e,id){dragId=id;e.dataTransfer.setData('text/plain',id);e.dataTransfer.effectAllowed='copy'}
+function onDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='copy';e.currentTarget.classList.add('drag-over')}
+function onDragLeave(e){e.currentTarget.classList.remove('drag-over')}
+function onDrop(e,si){e.preventDefault();e.currentTarget.classList.remove('drag-over');const id=e.dataTransfer.getData('text/plain')||dragId;if(!id||!disc.has(id))return;addSlotAt(id,si);dragId=null}
+function onToolDrop(e){e.preventDefault();e.currentTarget.classList.remove('drag-over');const id=e.dataTransfer.getData('text/plain')||dragId;if(!id||!disc.has(id)||!I[id].tool)return;toolSlot=id;renderCraft();renderCond();updateHints();dragId=null}
+
+function addSlot(id){if(!disc.has(id))return;const idx=slots.indexOf(null);if(idx===-1)return;addSlotAt(id,idx)}
+function addSlotAt(id,si){if(slots[si]!==null)return;slots[si]=id;renderCraft();renderCond();updateHints()}
+function clearSlot(i){slots[i]=null;renderCraft();renderCond();document.getElementById('ra').innerHTML='';updateHints()}
+function clearTool(){toolSlot=null;renderCraft();renderCond();updateHints()}
+function clearAll(){slots=[null,null,null,null];toolSlot=null;renderCraft();renderCond();document.getElementById('ra').innerHTML='';updateHints()}
+
+function updateBtn(){
+const btn=document.getElementById('cb');
+btn.className=slots.some(s=>s!==null)?'cbtn active':'cbtn disabled';
+}
+
+function findRecipe(ing,proc,tool){
+const s=[...ing].sort();
+for(const r of R){
+if(r.p!==proc)continue;
+const rs=[...r.i].sort();
+if(s.length!==rs.length)continue;
+if(!s.every((v,i)=>v===rs[i]))continue;
+if(r.need&&!disc.has(r.need))continue;
+if(r.req&&tool!==r.req)continue;
+return r;
+}
+return null;
+}
+
+function findRecipeNoReq(ing,proc){
+const s=[...ing].sort();
+for(const r of R){
+if(r.p!==proc)continue;
+const rs=[...r.i].sort();
+if(s.length!==rs.length)continue;
+if(!s.every((v,i)=>v===rs[i]))continue;
+return r;
+}
+return null;
+}
+
+function findRecipeAnyProc(ing){
+const s=[...ing].sort();
+for(const r of R){
+const rs=[...r.i].sort();
+if(s.length!==rs.length)continue;
+if(!s.every((v,i)=>v===rs[i]))continue;
+return r;
+}
+return null;
+}
+
+function tryCombine(){
+const ing=slots.filter(s=>s!==null);
+if(ing.length===0)return;
+const recipe=findRecipe(ing,selProc,toolSlot);
+const ra=document.getElementById('ra');
+if(recipe){
+const it=I[recipe.r];
+const isNew=!disc.has(recipe.r);
+disc.add(recipe.r);
+newI.add(recipe.r);
+const era=ERAS[it.era];
+ra.innerHTML=`<div class="result-item"><span class="re">${it.e}</span><span class="rn">${it.n}</span><span class="ra" style="background:${era.c}22;color:${era.c}">${era.i} ${era.n}</span></div>`;
+if(isNew){showDisc(recipe.r);sparkle()}
+slots=[null,null,null,null];toolSlot=null;
+renderCraft();renderItems();renderFilter();renderProc();renderCond();updateTemp();updateProgress();updateHints();saveGame();
+}else{
+const hint=getHint(ing,selProc,toolSlot);
+ra.innerHTML=`<div class="fail-text">${hint}</div>`;
+}
+}
+
+function getHint(ing,proc,tool){
+const s=[...ing].sort();
+const rnt=findRecipeNoReq(ing,proc);
+if(rnt&&rnt.need&&!disc.has(rnt.need))return `❌ 需要先发现: ${I[rnt.need].n}`;
+if(rnt&&rnt.req&&tool!==rnt.req){
+if(!disc.has(rnt.req))return `❌ 需要工具: ${I[rnt.req].n}（尚未发现）`;
+return `❌ 请在工具位装备: ${I[rnt.req].n}`;
+}
+const rap=findRecipeAnyProc(ing);
+if(rap&&rap.p!==proc)return `❌ 工艺不对！试试「${P[rap.p].n}」`;
+if(rap&&rap.need&&!disc.has(rap.need))return `❌ 需要先发现: ${I[rap.need].n}`;
+if(rap&&rap.req&&!disc.has(rap.req))return `❌ 需要先发现工具: ${I[rap.req].n}`;
+for(const r of R){
+if(r.p!==proc)continue;
+const rC={};r.i.forEach(x=>{rC[x]=(rC[x]||0)+1});
+const iC={};ing.forEach(x=>{iC[x]=(iC[x]||0)+1});
+let sub=true;
+for(const[k,v]of Object.entries(iC)){if(!rC[k]||rC[k]<v){sub=false;break}}
+if(sub&&ing.length<r.i.length){
+const t={...rC};ing.forEach(x=>{t[x]--});
+const miss=[];for(const[k,v]of Object.entries(t)){for(let j=0;j<v;j++)miss.push(I[k].n)}
+return `❌ 还缺少: ${miss.join('、')}`;
+}
+}
+for(const r of R){
+if(r.p!==proc)continue;
+const rC={};r.i.forEach(x=>{rC[x]=(rC[x]||0)+1});
+const iC={};ing.forEach(x=>{iC[x]=(iC[x]||0)+1});
+let sup=true;
+for(const[k,v]of Object.entries(rC)){if(!iC[k]||iC[k]<v){sup=false;break}}
+if(sup&&ing.length>r.i.length)return `❌ 材料太多了，试试减少一些`;
+}
+return '❌ 这组材料无法合成';
+}
+
+function showDisc(id){
+const it=I[id];const era=ERAS[it.era];
+const recipe=R.find(r=>r.r===id);
+let rs='';
+if(recipe)rs=recipe.i.map(x=>I[x].e+I[x].n).join(' + ')+` [${P[recipe.p].n}]`;
+let reqStr='';
+if(recipe&&recipe.req)reqStr=`<div class="dreq">🔧 需要装备工具: ${I[recipe.req].n}</div>`;
+if(recipe&&recipe.need)reqStr+=`<div class="dreq">🏗️ 需要已发现: ${I[recipe.need].n}</div>`;
+document.getElementById('db').innerHTML=`<span class="de">${it.e}</span><div class="dn">${it.n}</div><span class="da" style="background:${era.c}22;color:${era.c}">${era.i} ${era.n}</span><div class="dd">${it.d}</div>${it.heat?`<div class="dd" style="color:var(--accent)">🔥 可达 ${it.maxT}°C 高温！</div>`:''}${it.tool?`<div class="dd" style="color:#60a0d0">🔧 可作为工具使用</div>`:''}<div class="dr">${rs}</div>${reqStr}`;
+document.getElementById('dm').classList.add('show');
+setTimeout(()=>cm('dm'),2800);
+}
+
+function cm(id){document.getElementById(id).classList.remove('show')}
+
+function isMob(){return window.innerWidth<=768}
+
+function mobTab(tab){
+const ws=document.querySelector('.workspace');
+const sb=document.querySelector('.sidebar');
+const btns=document.querySelectorAll('#mtab button');
+btns.forEach(b=>b.classList.remove('active'));
+if(tab==='craft'){
+ws.style.display='flex';sb.classList.remove('mob-show');
+btns[0].classList.add('active');
+}else if(tab==='inv'){
+ws.style.display='none';sb.classList.add('mob-show');
+btns[1].classList.add('active');
+}else if(tab==='tree'){
+showTree();btns[2].classList.add('active');
+}else if(tab==='enc'){
+showEnc();btns[3].classList.add('active');
+}
+}
+
+function showToolPick(){
+const tools=[...disc].filter(id=>I[id].tool);
+const body=document.getElementById('tpb');
+if(tools.length===0){
+body.innerHTML='<div class="tp-empty">还没有发现任何工具<br>继续探索吧！</div>';
+}else{
+let h='<div class="tp-grid">';
+h+=`<div class="tp-item" onclick="pickTool(null)"><span class="tp-e">❌</span><span class="tp-n">不使用</span></div>`;
+tools.forEach(id=>{
+const it=I[id];
+h+=`<div class="tp-item${toolSlot===id?' style="border-color:var(--gold)"':''}" onclick="pickTool('${id}')"><span class="tp-e">${it.e}</span><span class="tp-n">${it.n}</span></div>`;
+});
+h+='</div>';body.innerHTML=h;
+}
+document.getElementById('tpm').classList.add('show');
+}
+
+function pickTool(id){
+toolSlot=id;cm('tpm');renderCraft();renderCond();updateHints();
+}
+
+function sparkle(){
+const a=document.querySelector('.craft-area');const r=a.getBoundingClientRect();
+const cx=r.left+r.width/2,cy=r.top+r.height/2;
+for(let i=0;i<14;i++){
+const s=document.createElement('div');
+const ang=Math.random()*Math.PI*2;const dist=30+Math.random()*70;
+const tx=Math.cos(ang)*dist,ty=Math.sin(ang)*dist;
+s.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:${3+Math.random()*4}px;height:${3+Math.random()*4}px;border-radius:50%;background:${['#ffd700','#f0a030','#4ecca3','#fff','#9060e0'][i%5]};pointer-events:none;z-index:9999;--tx:${tx}px;--ty:${ty}px;animation:sparkle ${.4+Math.random()*.3}s ease-out forwards`;
+document.body.appendChild(s);setTimeout(()=>s.remove(),900);
+}
+}
+
+function updateProgress(){
+const cnt=disc.size;const pct=(cnt/TOTAL*100).toFixed(1);
+document.getElementById('pf').style.width=pct+'%';
+document.getElementById('pt').textContent=`${cnt}/${TOTAL}`;
+const ce=getCurEra();const badge=document.getElementById('eb');const ei=ERAS[ce];
+badge.textContent=`${ei.i} ${ei.n}`;badge.style.borderColor=ei.c;badge.style.color=ei.c;badge.style.background=ei.c+'18';
+}
+
+function getCurEra(){let mx=0;disc.forEach(id=>{const idx=EO.indexOf(I[id].era);if(idx>mx)mx=idx});return EO[mx]}
+
+function updateHints(){
+const found=disc.size;const remain=TOTAL-found;
+const possible=R.filter(r=>{
+if(disc.has(r.r))return false;
+if(!r.i.every(x=>disc.has(x)))return false;
+if(!procAvail(r.p))return false;
+if(r.req&&!disc.has(r.req))return false;
+if(r.need&&!disc.has(r.need))return false;
+return true;
+}).length;
+document.getElementById('sh').innerHTML=`已发现 <b>${found}</b>/${TOTAL}，剩余 <b>${remain}</b><br>当前可合成: <b>${possible}</b> 种`;
+const filled=slots.filter(s=>s!==null);
+const wh=document.getElementById('wh');
+if(filled.length===0){
+const hints=[];
+if(!disc.has('fire'))hints.push('💡 试试用燧石碰撞石头产生火花…');
+else if(!disc.has('campfire'))hints.push('💡 把火和石头组合，可以搭建营火');
+else if(!disc.has('charcoal')&&!disc.has('ash'))hints.push('💡 试试用烧制工艺处理木头');
+else if(!disc.has('salt'))hints.push('💡 海水晒干能得到什么？试试烧制海水');
+else if(!disc.has('wheat'))hints.push('💡 种子+淡水可以种出小麦，试试发酵工艺');
+else if(!disc.has('pottery'))hints.push('💡 陶土需要用烧制工艺才能变成陶器');
+else if(!disc.has('copper_ore'))hints.push('💡 用石锤敲击石头，也许能找到矿石');
+else if(!disc.has('kiln'))hints.push('💡 三个砖可以搭建窑炉，获得更高温度');
+else if(!disc.has('copper'))hints.push('💡 铜矿石+木炭，用冶炼工艺提取铜');
+else if(!disc.has('bronze'))hints.push('💡 铜和锡的合金就是青铜');
+else if(!disc.has('iron'))hints.push('💡 铁矿石需要更高温度，先造锻炉');
+else if(!disc.has('steel'))hints.push('💡 铁和木炭一起锻造，可以得到钢');
+else if(!disc.has('microscope'))hints.push('💡 透镜组合可以制作显微镜，窥探微观世界');
+else if(!disc.has('electricity'))hints.push('💡 磁铁+金属丝→发电机，蒸汽机驱动');
+else if(!disc.has('ammonia'))hints.push('💡 电力+淡水+空气→合成氨，化工之母');
+else if(!disc.has('chip'))hints.push('💡 沙子电解得到纯硅，再光刻成芯片');
+else if(!disc.has('dna'))hints.push('💡 细胞+显微镜→DNA，生命的密码');
+else if(!disc.has('gene'))hints.push('💡 DNA+酶→基因，用基因工程改造生命');
+else if(!disc.has('nuclear_reactor'))hints.push('💡 放射性+混凝土+钢→核反应堆');
+else if(!disc.has('qubit'))hints.push('💡 超导体+芯片→量子比特，量子时代开启');
+else if(!disc.has('quantum_computer'))hints.push('💡 量子比特组合→量子计算机');
+else if(!disc.has('fusion_reactor'))hints.push('💡 核反应堆+氢→聚变等离子体→聚变反应堆');
+if(possible>0)hints.push(`🎯 当前有 ${possible} 种可合成，试试已有材料的组合！`);
+if(hints.length>0)wh.textContent=hints[0];
+else wh.textContent=isMob()?'👇 切换到「物品」标签选择材料':'👇 点击材料放入合成台';
+}else{
+const matching=R.filter(r=>{
+if(disc.has(r.r))return false;
+const inSlots=filled.filter(x=>r.i.includes(x));
+return inSlots.length>0&&inSlots.length<r.i.length;
+});
+if(matching.length>0){
+const r=matching[0];
+const missing=r.i.filter(x=>!filled.includes(x));
+const mNames=missing.map(x=>I[x].n).join('、');
+wh.textContent=`💡 还需要: ${mNames}，工艺: ${P[r.p].n}`;
+}else{
+wh.textContent=`已放入 ${filled.length} 种材料，选择工艺后合成`;
+}
+}
+}
+
+function showTree(){document.getElementById('tm').classList.add('show');renderTree()}
+
+function renderTree(){
+const con=document.getElementById('tcon');con.innerHTML='';
+const ei={};EO.forEach(e=>{ei[e]=[]});
+Object.entries(I).forEach(([id,it])=>{ei[it.era].push(id)});
+const nW=68,nH=50,eGap=90,hGap=14,eLH=24;
+const ns='http://www.w3.org/2000/svg';const pos={};
+let mxC=0;EO.forEach(e=>{if(ei[e].length>mxC)mxC=ei[e].length});
+const tW=mxC*(nW+hGap)+80;const tH=EO.length*(nH+eGap)+80;
+const inner=document.createElement('div');inner.className='tc-inner';inner.style.width=tW+'px';inner.style.height=tH+'px';
+const svg=document.createElementNS(ns,'svg');svg.setAttribute('width',tW);svg.setAttribute('height',tH);svg.style.width=tW+'px';svg.style.height=tH+'px';
+EO.forEach((era,ri)=>{
+const items=ei[era];const y=ri*(nH+eGap)+eLH+30;
+const rw=items.length*(nW+hGap)-hGap;const sx=(tW-rw)/2;
+items.forEach((id,ci)=>{pos[id]={x:sx+ci*(nW+hGap)+nW/2,y:y+nH/2,px:sx+ci*(nW+hGap),py:y}});
+});
+R.forEach(r=>{
+r.i.forEach(fid=>{
+if(!pos[fid]||!pos[r.r])return;
+const f=pos[fid],t=pos[r.r];
+const line=document.createElementNS(ns,'line');
+line.setAttribute('x1',f.x);line.setAttribute('y1',f.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);
+const d=disc.has(fid)&&disc.has(r.r);
+line.setAttribute('stroke',d?ERAS[I[r.r].era].c+'50':'#ffffff08');
+line.setAttribute('stroke-width',d?'2':'1');
+if(d){line.style.strokeDasharray='2000';line.style.strokeDashoffset='2000';line.style.animation='drawLine 1s ease forwards'}
+svg.appendChild(line);
+});
+});
+EO.forEach((era,ri)=>{
+const y=ri*(nH+eGap)+12;
+const label=document.createElement('div');label.className='tl';label.style.top=y+'px';label.style.color=ERAS[era].c;
+label.textContent=`${ERAS[era].i} ${ERAS[era].n}`;inner.appendChild(label);
+});
+Object.entries(I).forEach(([id,it])=>{
+if(!pos[id])return;const p=pos[id];const d=disc.has(id);
+const node=document.createElement('div');
+node.className=`tn${d?' disc':' undisc'}`;node.style.left=p.px+'px';node.style.top=p.py+'px';
+node.style.borderColor=d?ERAS[it.era].c:'';
+node.innerHTML=`<span class="te">${d?it.e:'❓'}</span><span class="tt">${d?it.n:'???'}</span>`;
+if(d)node.onclick=()=>{
+const recipe=R.find(r=>r.r===id);
+let info=`${it.e} ${it.n}\n${it.d}`;
+if(it.heat)info+=`\n🔥 热源: ${it.maxT}°C`;
+if(it.tool)info+=`\n🔧 可作为工具使用`;
+if(recipe)info+=`\n配方: ${recipe.i.map(x=>I[x].n).join('+')} [${P[recipe.p].n}]${recipe.req?' 装备:'+I[recipe.req].n:''}${recipe.need?' 需要:'+I[recipe.need].n:''}`;
+alert(info);
+};
+inner.appendChild(node);
+});
+inner.appendChild(svg);svg.style.zIndex='1';
+con.appendChild(inner);
+const zoomCtrl=document.createElement('div');zoomCtrl.className='tc-zoom';
+const zoomIn=document.createElement('button');zoomIn.textContent='+';zoomIn.title='放大';
+const zoomLabel=document.createElement('div');zoomLabel.className='zlabel';zoomLabel.textContent='100%';
+const zoomOut=document.createElement('button');zoomOut.textContent='−';zoomOut.title='缩小';
+const zoomFit=document.createElement('button');zoomFit.textContent='⊡';zoomFit.title='适应屏幕';
+zoomCtrl.append(zoomIn,zoomLabel,zoomOut,zoomFit);con.appendChild(zoomCtrl);
+const mmDiv=document.createElement('div');mmDiv.className='tc-minimap';
+const mmCanvas=document.createElement('canvas');mmCanvas.width=240;mmCanvas.height=160;mmDiv.appendChild(mmCanvas);
+const vpDiv=document.createElement('div');vpDiv.className='tc-vp';mmDiv.appendChild(vpDiv);
+con.appendChild(mmDiv);
+let scale=1,panX=0,panY=0;
+function applyTransform(){
+inner.style.transform=`translate(${panX}px,${panY}px) scale(${scale})`;
+zoomLabel.textContent=Math.round(scale*100)+'%';
+updateMinimap();
+}
+function fitToScreen(){
+const cw=con.clientWidth,ch=con.clientHeight;
+const s=Math.min(cw/tW,ch/tH)*0.92;
+scale=s;panX=(cw-tW*s)/2;panY=(ch-tH*s)/2;
+applyTransform();
+}
+function zoomAt(ds,cx,cy){
+const ns2=Math.max(0.15,Math.min(3,scale*ds));
+const r=ns2/scale;
+panX=cx-(cx-panX)*r;panY=cy-(cy-panY)*r;
+scale=ns2;applyTransform();
+}
+zoomIn.onclick=()=>zoomAt(1.3,con.clientWidth/2,con.clientHeight/2);
+zoomOut.onclick=()=>zoomAt(0.7,con.clientWidth/2,con.clientHeight/2);
+zoomFit.onclick=fitToScreen;
+let drag=false,dsx,dsy,dpx,dpy;
+con.onmousedown=e=>{if(e.target.closest('.tc-zoom'))return;drag=true;dsx=e.clientX;dsy=e.clientY;dpx=panX;dpy=panY;e.preventDefault()};
+window.addEventListener('mousemove',e=>{if(!drag)return;panX=dpx+(e.clientX-dsx);panY=dpy+(e.clientY-dsy);applyTransform()});
+window.addEventListener('mouseup',()=>drag=false);
+con.addEventListener('wheel',e=>{e.preventDefault();const r=con.getBoundingClientRect();const cx=e.clientX-r.left,cy=e.clientY-r.top;zoomAt(e.deltaY<0?1.12:0.88,cx,cy)},{passive:false});
+let touches={};
+con.ontouchstart=e=>{if(e.target.closest('.tc-zoom'))return;e.preventDefault();for(const t of e.changedTouches)touches[t.identifier]={x:t.clientX,y:t.clientY}};
+con.ontouchmove=e=>{e.preventDefault();const ids=Object.keys(touches);if(e.touches.length===1&&ids.length>=1){
+const t=e.touches[0],o=touches[ids[0]];if(!o)return;
+panX+=t.clientX-o.x;panY+=t.clientY-o.y;touches[ids[0]]={x:t.clientX,y:t.clientY};applyTransform();
+}else if(e.touches.length===2&&ids.length>=2){
+const t1=e.touches[0],t2=e.touches[1];
+const o1=touches[ids[0]],o2=touches[ids[1]];if(!o1||!o2)return;
+const od=Math.hypot(o2.x-o1.x,o2.y-o1.y);
+const nd=Math.hypot(t2.clientX-t1.clientX,t2.clientY-t1.clientY);
+const cx=(t1.clientX+t2.clientX)/2-con.getBoundingClientRect().left;
+const cy=(t1.clientY+t2.clientY)/2-con.getBoundingClientRect().top;
+zoomAt(nd/od,cx,cy);
+touches[t1.identifier]={x:t1.clientX,y:t1.clientY};
+touches[t2.identifier]={x:t2.clientX,y:t2.clientY};
+}};
+con.ontouchend=e=>{for(const t of e.changedTouches)delete touches[t.identifier]};
+function updateMinimap(){
+const ctx=mmCanvas.getContext('2d');ctx.clearRect(0,0,240,160);
+const sx=240/tW,sy=160/tH,ms=Math.min(sx,sy)*0.9;
+const ox=(240-tW*ms)/2,oy=(160-tH*ms)/2;
+ctx.fillStyle='#0a0a2a';ctx.fillRect(0,0,240,160);
+EO.forEach((era,ri)=>{
+const y=ri*(nH+eGap)+eLH+30;
+ctx.fillStyle=ERAS[era].c+'30';ctx.fillRect(ox,oy+y*ms,tW*ms,(nH+eGap)*ms);
+ctx.fillStyle=ERAS[era].c+'80';ctx.font='8px sans-serif';ctx.fillText(ERAS[era].n,ox+2,oy+y*ms-2);
+});
+ei['stone'].length&&Object.entries(I).forEach(([id,it])=>{
+if(!pos[id])return;const p=pos[id];const d=disc.has(id);
+ctx.fillStyle=d?ERAS[it.era].c:'#333';
+ctx.fillRect(ox+p.px*ms,oy+p.py*ms,Math.max(2,nW*ms),Math.max(2,nH*ms));
+});
+const cw=con.clientWidth,ch=con.clientHeight;
+const vx=(-panX/scale)*ms+ox,vy=(-panY/scale)*ms+oy;
+const vw=(cw/scale)*ms,vh=(ch/scale)*ms;
+vpDiv.style.left=(vx/240*100)+'%';vpDiv.style.top=(vy/160*100)+'%';
+vpDiv.style.width=(vw/240*100)+'%';vpDiv.style.height=(vh/160*100)+'%';
+}
+fitToScreen();
+}
+
+function showEnc(){document.getElementById('em').classList.add('show');renderEnc()}
+
+function renderEnc(){
+const body=document.getElementById('eb2');
+let h='<div class="egrid">';
+const sorted=[...disc].sort((a,b)=>{const ea=EO.indexOf(I[a].era),eb=EO.indexOf(I[b].era);return ea!==eb?ea-eb:a.localeCompare(b)});
+sorted.forEach(id=>{
+const it=I[id];const era=ERAS[it.era];
+const recipe=R.find(r=>r.r===id);
+let rs='';
+if(recipe)rs=`${recipe.i.map(x=>I[x].e).join('+')} → ${P[recipe.p].i}${P[recipe.p].n}${recipe.req?' (装备'+I[recipe.req].n+')':''}${recipe.need?' (需'+I[recipe.need].n+')':''}`;
+h+=`<div class="ecard"><span class="ee">${it.e}</span><div class="ei"><div class="en">${it.n}</div><span class="ea" style="background:${era.c}22;color:${era.c}">${era.i} ${era.n}</span><div class="ed">${it.d}</div>${it.heat?`<div class="ed" style="color:var(--accent)">🔥 ${it.maxT}°C</div>`:''}${it.tool?`<div class="ed" style="color:#60a0d0">🔧 工具</div>`:''}${rs?`<div class="er">${rs}</div>`:'<div class="er">基础元素</div>'}</div></div>`;
+});
+h+='</div>';body.innerHTML=h;
+}
+
+function saveGame(){
+try{localStorage.setItem('tev3',JSON.stringify([...disc]))}catch(e){}
+saveToServer();
+}
+function loadGame(){
+try{const s=localStorage.getItem('tev3');if(s){const a=JSON.parse(s);if(a.length>0)disc=new Set(a)}}catch(e){}
+loadFromServer();
+}
+async function saveToServer(){
+const t=localStorage.getItem('token');
+if(!t)return;
+try{await fetch('/api/progress/simple',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+t},body:JSON.stringify({discovered:[...disc]})})}catch(e){}
+}
+async function loadFromServer(){
+try{const s=localStorage.getItem('tev3');if(s){const a=JSON.parse(s);if(a.length>0)disc=new Set(a)}}catch(e){}
+const t=localStorage.getItem('token');
+if(!t)return;
+try{const res=await fetch('/api/progress/simple',{headers:{'Authorization':'Bearer '+t}});const r=await res.json();
+if(r.ok&&r.discovered&&r.discovered.length>0){disc=new Set(r.discovered);localStorage.setItem('tev3',JSON.stringify([...disc]))}}catch(e){}
+}
+function resetGame(){
+if(!confirm('确定重置？所有进度将丢失！'))return;
+disc=new Set(BASE);slots=[null,null,null,null];toolSlot=null;selProc='handcraft';curFilter='all';
+clearAll();renderProc();renderCond();renderFilter();renderItems();updateTemp();updateProgress();updateHints();
+localStorage.removeItem('tev3');saveToServer();
+}
+
+async function initAsync(){await loadFromServer();renderCraft();renderItems();renderFilter();renderProc();renderCond();updateTemp();updateProgress();updateHints()}
+init();initAsync();
+document.addEventListener('touchmove',function(e){},{passive:true});
+
+</script>
+</body>
+</html>

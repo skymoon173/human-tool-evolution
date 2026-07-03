@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Database
+game.db
+*.db
+*.db-journal
+
+# Cloudflare
+cloudflared.exe
+config.yml
+cert.pem
+*.pem
+
+# Build outputs
+www/
+android/
+ios/
+build/
+dist/
+*.apk
+*.aab
+*.keystore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# Secrets
+github.md
+.env
+.env.local
+
+# Temp
+_temp.js
+_temp.*

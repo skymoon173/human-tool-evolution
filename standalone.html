@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<title>人类工具进化史</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;min-height:100dvh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#0f0f1e 0%,#1a1a2e 50%,#16213e 100%);color:#fff;overflow-x:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.wrap{max-width:900px;margin:0 auto;padding:20px;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.logo{font-size:14px;letter-spacing:6px;color:#888;text-transform:uppercase;margin-bottom:10px}
+.title{font-size:48px;font-weight:900;background:linear-gradient(90deg,#ff6b6b,#feca57,#48dbfb,#a55eea);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:300% auto;animation:shine 4s linear infinite;margin-bottom:8px;text-align:center;line-height:1.1}
+@keyframes shine{to{background-position:300% center}}
+.subtitle{font-size:14px;color:#888;text-align:center;margin-bottom:40px;letter-spacing:2px}
+.cards{display:grid;grid-template-columns:1fr;gap:16px;width:100%;max-width:500px}
+@media(min-width:600px){.cards{grid-template-columns:1fr 1fr}}
+.card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px);position:relative;overflow:hidden;text-decoration:none;color:inherit;display:block}
+.card:active{transform:scale(.97)}
+.card:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
+.card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.05) 0%,transparent 70%);opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card .emoji{font-size:48px;margin-bottom:12px;display:block}
+.card h2{font-size:20px;margin-bottom:8px;font-weight:700}
+.card p{font-size:13px;color:#aaa;line-height:1.5}
+.card .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;margin-top:12px;background:rgba(255,255,255,0.1);color:#888}
+.foot{margin-top:30px;font-size:11px;color:#666;text-align:center;line-height:1.6}
+.foot a{color:#48dbfb;text-decoration:none}
+.btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+.btn{padding:10px 20px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:#fff;border-radius:30px;cursor:pointer;font-size:13px;transition:all .2s;text-decoration:none;display:inline-block}
+.btn:hover{background:rgba(255,255,255,0.1)}
+.btn.danger{border-color:#ff6b6b;color:#ff6b6b}
+.user-box{margin-top:20px;padding:12px 20px;background:rgba(255,255,255,0.05);border-radius:30px;font-size:13px;color:#888;display:none;align-items:center;gap:10px}
+.user-box.show{display:flex}
+.user-box .dot{width:8px;height:8px;border-radius:50%;background:#48dbfb}
+#msg{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:rgba(0,0,0,0.8);border-radius:8px;font-size:13px;z-index:1000;display:none}
+</style>
+</head>
+<body>
+<div id="msg"></div>
+<div class="wrap">
+<div class="logo">Human Tool Evolution</div>
+<h1 class="title">人类工具进化史</h1>
+<div class="subtitle">从石头到戴森球 · 单机离线版</div>
+
+<div class="cards">
+<a class="card" href="simple.html">
+<span class="emoji">🎮</span>
+<h2>简单版</h2>
+<p>友好入门，流畅体验，包含物理、化学、生物、量子跨学科合成链。</p>
+<span class="tag">推荐入门</span>
+</a>
+<a class="card" href="realistic.html">
+<span class="emoji">📚</span>
+<h2>真实版</h2>
+<p>万物说明书：化学式、熔点、密度，真实工艺参数，硬核科普。</p>
+<span class="tag">硬核模式</span>
+</a>
+</div>
+
+<div class="user-box" id="userBox">
+<span class="dot"></span>
+<span id="userText"></span>
+<button class="btn" style="padding:4px 12px;font-size:11px" onclick="clearProgress()">清除进度</button>
+</div>
+
+<div class="btn-row">
+<a class="btn" href="#" onclick="exportProgress();return false">导出进度</a>
+<label class="btn" style="cursor:pointer">导入进度
+<input type="file" accept=".json" onchange="importProgress(event)" style="display:none">
+</label>
+</div>
+
+<div class="foot">
+单机版 · 进度保存在本地浏览器<br>
+可"添加到主屏幕"作为离线应用 · MIT License<br>
+</div>
+</div>
+
+<script>
+function showMsg(t){const m=document.getElementById('msg');m.textContent=t;m.style.display='block';setTimeout(()=>m.style.display='none',2000)}
+function updateUserBox(){
+const s=localStorage.getItem('tev3'),r=localStorage.getItem('tevr3');
+const ub=document.getElementById('userBox');
+if(s||r){
+const sc=s?JSON.parse(s).length:0;
+const rc=r?JSON.parse(r).length:0;
+ub.classList.add('show');
+document.getElementById('userText').textContent=`简单版 ${sc}项 / 真实版 ${rc}项 已发现`;
+}
+}
+function clearProgress(){
+if(!confirm('确定清除所有本地进度？此操作不可恢复！'))return;
+localStorage.removeItem('tev3');
+localStorage.removeItem('tevr3');
+showMsg('已清除所有进度');
+updateUserBox();
+}
+function exportProgress(){
+const data={simple:localStorage.getItem('tev3'),realistic:localStorage.getItem('tevr3'),exportTime:new Date().toISOString()};
+const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;a.download='human-tool-evolution-save.json';a.click();
+URL.revokeObjectURL(url);showMsg('进度已导出');
+}
+function importProgress(e){
+const f=e.target.files[0];if(!f)return;
+const r=new FileReader();
+r.onload=()=>{
+try{const d=JSON.parse(r.result);
+if(d.simple)localStorage.setItem('tev3',d.simple);
+if(d.realistic)localStorage.setItem('tevr3',d.realistic);
+showMsg('进度导入成功');updateUserBox();
+}catch(err){showMsg('导入失败：文件格式错误')}
+};
+r.readAsText(f);
+}
+if('serviceWorker' in navigator){
+window.addEventListener('load',()=>{
+navigator.serviceWorker.register('sw.js').catch(()=>{});
+});
+}
+updateUserBox();
+</script>
+</body>
+</html>

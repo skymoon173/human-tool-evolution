@@ -1,0 +1,26 @@
+{
+  "name": "人类工具进化史",
+  "short_name": "工具进化",
+  "description": "从石头到戴森球 · 跨学科合成游戏",
+  "start_url": "standalone.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0f1e",
+  "theme_color": "#1a1a2e",
+  "lang": "zh-CN",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
