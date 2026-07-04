@@ -169,49 +169,52 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 .progress-text{font-size:.55em}
 .era-badge{padding:1px 6px;font-size:.5em}
 .main{flex-direction:column;height:calc(100vh - 34px - env(safe-area-inset-top,0px) - 44px);height:calc(100dvh - 34px - env(safe-area-inset-top,0px) - 44px)}
-.workspace{min-height:0;flex:1;padding:3px 5px;gap:3px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.sidebar{width:100%;flex:1;border-left:none;border-top:2px solid var(--border);display:none}
-.sidebar.mob-show{display:flex}
-.craft-area{gap:3px;min-height:55px}
-.craft-slot{width:50px;height:60px;border-radius:7px}
-.craft-slot .se{font-size:1.2em}
-.craft-slot .sn{font-size:.4em;max-width:44px}
-.craft-slot .sc{font-size:.32em}
-.craft-slot .sx{opacity:1;font-size:.65em;right:1px;top:0}
-.craft-plus{font-size:.9em}
-.tool-slot-wrap{gap:3px;margin-top:1px}
-.tool-slot{width:44px;height:50px;border-radius:6px}
-.tool-slot .se{font-size:1.1em}
-.tool-slot .sn{font-size:.38em;max-width:38px}
-.tool-slot .sx{opacity:1;font-size:.55em}
-.tool-label{font-size:.48em}
+.workspace{min-height:0;flex:0 0 50%;padding:3px 5px;gap:2px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sidebar{width:100%;flex:1;border-left:none;border-top:2px solid var(--border);display:flex;min-height:0}
+.main.craft-full .sidebar{display:none}
+.main.craft-full .workspace{flex:1}
+.main.inv-full .workspace{display:none}
+.main.inv-full .sidebar{flex:1}
+.craft-area{gap:2px;min-height:48px;flex-wrap:wrap;justify-content:center}
+.craft-slot{width:46px;height:54px;border-radius:6px}
+.craft-slot .se{font-size:1.1em}
+.craft-slot .sn{font-size:.36em;max-width:40px}
+.craft-slot .sc{font-size:.28em}
+.craft-slot .sx{opacity:1;font-size:.6em;right:1px;top:0}
+.craft-plus{font-size:.85em}
+.tool-slot-wrap{gap:2px;margin-top:1px;justify-content:center}
+.tool-slot{width:40px;height:46px;border-radius:5px}
+.tool-slot .se{font-size:1em}
+.tool-slot .sn{font-size:.34em;max-width:34px}
+.tool-slot .sx{opacity:1;font-size:.5em}
+.tool-label{font-size:.42em}
 .process-section{gap:2px}
-.process-row{gap:1px}
-.pbtn{padding:2px 4px;font-size:.42em;border-radius:4px}
-.cond-section{gap:2px}
-.cond-tag{font-size:.4em;padding:1px 4px}
-.temp-section{gap:3px}
-.temp-bar{width:10px;height:35px}
-.temp-info{font-size:.45em;line-height:1.2}
-.action-row{gap:3px}
-.cbtn{padding:4px 14px;font-size:.7em;border-radius:6px}
-.clrbtn{padding:2px 6px;font-size:.48em}
-.result-area{min-height:35px}
-.result-item .re{font-size:1.8em}
-.result-item .rn{font-size:.65em}
-.ws-hint{font-size:.55em}
-.igrid{grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:2px;padding:3px}
-.icard{min-height:46px;padding:2px 1px;border-radius:5px}
-.icard .ie{font-size:1.1em}
-.icard .iname{font-size:.38em}
-.icard .ichem{font-size:.28em}
-.sb-head{padding:3px 6px}
-.sb-head h2{font-size:.65em}
+.process-row{gap:1px;justify-content:center}
+.pbtn{padding:1px 3px;font-size:.38em;border-radius:3px}
+.cond-section{gap:2px;justify-content:center}
+.cond-tag{font-size:.36em;padding:1px 3px}
+.temp-section{gap:3px;justify-content:center}
+.temp-bar{width:8px;height:28px}
+.temp-info{font-size:.4em;line-height:1.1}
+.action-row{gap:3px;justify-content:center}
+.cbtn{padding:3px 12px;font-size:.62em;border-radius:5px}
+.clrbtn{padding:2px 5px;font-size:.42em}
+.result-area{min-height:30px}
+.result-item .re{font-size:1.6em}
+.result-item .rn{font-size:.58em}
+.ws-hint{font-size:.48em}
+.igrid{grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:2px;padding:3px}
+.icard{min-height:42px;padding:2px 1px;border-radius:4px}
+.icard .ie{font-size:1em}
+.icard .iname{font-size:.34em}
+.icard .ichem{font-size:.24em}
+.sb-head{padding:2px 5px}
+.sb-head h2{font-size:.6em}
 .filter-row{padding:2px 3px;gap:1px}
-.fbtn{padding:1px 3px;font-size:.42em}
-.sb-hint{padding:3px 6px}
-.sb-hint h3{font-size:.48em}
-.sb-hint p{font-size:.42em}
+.fbtn{padding:1px 3px;font-size:.38em}
+.sb-hint{padding:2px 5px}
+.sb-hint h3{font-size:.44em}
+.sb-hint p{font-size:.38em}
 .mob-tab{display:flex}
 .egrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
 .ecard .ee{font-size:1.2em}
@@ -229,10 +232,36 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 .dr{font-size:.55em}
 .dreq{font-size:.55em}
 }
+@media(max-width:768px) and (orientation:landscape) and (max-height:500px){
+.main{flex-direction:row;height:calc(100vh - 34px - env(safe-area-inset-top,0px) - 44px);height:calc(100dvh - 34px - env(safe-area-inset-top,0px) - 44px)}
+.workspace{flex:1;min-height:0;border-right:2px solid var(--border)}
+.sidebar{flex:0 0 45%;border-left:none;border-top:none;border-right:none;display:flex;min-height:0}
+.main.craft-full .sidebar{display:none}
+.main.craft-full .workspace{flex:1}
+.main.inv-full .workspace{display:none}
+.main.inv-full .sidebar{flex:1}
+.header h1{font-size:.65em}
+.hbtn{padding:2px 4px;font-size:.45em}
+.craft-slot{width:42px;height:50px}
+.craft-slot .se{font-size:1em}
+.craft-slot .sn{font-size:.32em;max-width:36px}
+.tool-slot{width:36px;height:42px}
+.tool-slot .se{font-size:.9em}
+.tool-slot .sn{font-size:.3em;max-width:30px}
+.pbtn{padding:1px 3px;font-size:.36em}
+.temp-bar{height:24px}
+.cbtn{padding:3px 10px;font-size:.58em}
+.icard{min-height:38px}
+.icard .ie{font-size:.9em}
+.igrid{grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}
+}
 .mob-tab{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:2px solid var(--border);z-index:100;padding:3px 0;padding-bottom:env(safe-area-inset-bottom)}
-.mob-tab button{flex:1;padding:6px 0;border:none;background:transparent;color:var(--text2);font-size:.65em;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer}
+.mob-tab button{flex:1;padding:6px 0;border:none;background:transparent;color:var(--text2);font-size:.65em;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;position:relative}
 .mob-tab button.active{color:var(--gold)}
-.mob-tab button span{font-size:1.2em}
+.mob-tab button.active::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--gold);border-radius:0 0 3px 3px}
+.mob-tab button span:first-child{font-size:1.2em}
+.mob-tab button .lbl{font-size:.85em}
+.mob-tab button.active.full-mode::before{content:'⤢';position:absolute;top:-2px;right:2px;font-size:.8em;color:var(--gold)}
 </style>
 </head>
 <body>
@@ -288,10 +317,10 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 <div class="modal enc-m" id="em"><div class="mbox"><div class="mhead"><h2>📖 万物图鉴</h2><button class="mclose" onclick="cm('em')">✕</button></div><div class="mbody" id="eb2"></div></div></div>
 <div class="modal tool-pick-m" id="tpm"><div class="mbox"><div class="mhead"><h2>🔧 选择工具</h2><button class="mclose" onclick="cm('tpm')">✕</button></div><div class="mbody" id="tpb"></div></div></div>
 <div class="mob-tab" id="mtab">
-<button class="active" onclick="mobTab('craft')"><span>⚗️</span>合成</button>
-<button onclick="mobTab('inv')"><span>📦</span>物品</button>
-<button onclick="mobTab('tree')"><span>🌳</span>科技树</button>
-<button onclick="mobTab('enc')"><span>📖</span>图鉴</button>
+<button class="active" onclick="mobTab('craft')"><span>⚗️</span><span class="lbl"></span>合成</span></button>
+<button onclick="mobTab('inv')"><span>📦</span><span class="lbl">物品</span></button>
+<button onclick="mobTab('tree')"><span>🌳</span><span class="lbl">科技树</span></button>
+<button onclick="mobTab('enc')"><span>📖</span><span class="lbl">图鉴</span></button>
 </div>
 <script>
 const I={
@@ -670,11 +699,18 @@ document.getElementById('dm').classList.add('show');setTimeout(()=>cm('dm'),3200
 }
 function cm(id){document.getElementById(id).classList.remove('show')}
 function isMob(){return window.innerWidth<=768}
+let mobViewMode='split';
 function mobTab(tab){
-const ws=document.querySelector('.workspace');const sb=document.querySelector('.sidebar');const btns=document.querySelectorAll('#mtab button');btns.forEach(b=>b.classList.remove('active'));
-if(tab==='craft'){ws.style.display='flex';sb.classList.remove('mob-show');btns[0].classList.add('active')}
-else if(tab==='inv'){ws.style.display='none';sb.classList.add('mob-show');btns[1].classList.add('active')}
-else if(tab==='tree'){showTree();btns[2].classList.add('active')}
+const main=document.querySelector('.main');const btns=document.querySelectorAll('#mtab button');btns.forEach(b=>{b.classList.remove('active');b.classList.remove('full-mode')});
+if(tab==='craft'){
+if(mobViewMode==='craft-full'){mobViewMode='split';main.classList.remove('craft-full')}
+else{mobViewMode='craft-full';main.classList.add('craft-full');main.classList.remove('inv-full');btns[0].classList.add('full-mode')}
+btns[0].classList.add('active');
+}else if(tab==='inv'){
+if(mobViewMode==='inv-full'){mobViewMode='split';main.classList.remove('inv-full')}
+else{mobViewMode='inv-full';main.classList.add('inv-full');main.classList.remove('craft-full');btns[1].classList.add('full-mode')}
+btns[1].classList.add('active');
+}else if(tab==='tree'){showTree();btns[2].classList.add('active')}
 else if(tab==='enc'){showEnc();btns[3].classList.add('active')}
 }
 function showToolPick(){
